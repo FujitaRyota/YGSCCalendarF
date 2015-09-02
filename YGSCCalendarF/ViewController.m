@@ -16,6 +16,7 @@
 
 @property (weak, nonatomic) IBOutlet UICollectionView* montheCalendarView;
 @property (nonatomic, strong) NSDate *selectedDate;
+@property (weak, nonatomic) IBOutlet UILabel* monthLabel;
 
 
 @end
@@ -37,8 +38,13 @@
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
+    // 指定した月の末日を設定する
+    // 現在の日時から年と月を取得する
+    NSDate* now = [NSDate date];
+    NSCalendarUnit unitFlags = NSCalendarUnitYear | NSCalendarUnitMonth | NSCalendarUnitDay;
+    NSDateComponents* dateComponents = [[NSCalendar currentCalendar]components:unitFlags fromDate:now];
     
-    return [self monthLastDay:2015 month:2];
+    return [self monthLastDay:(int)dateComponents.year month:(int)dateComponents.month];
 }
 
 /**
@@ -54,6 +60,7 @@
     NSString* dayStr = [NSString stringWithFormat:@"%zd", indexPath.row+1];
     
     cell.dayLabel.text = dayStr;
+    cell.layer.cornerRadius = (cell.frame.size.width/2);
     return cell;
 }
 
@@ -147,6 +154,7 @@
         NSCalendarUnit unitFlags = NSCalendarUnitYear | NSCalendarUnitMonth | NSCalendarUnitDay;
         
         NSDateComponents* dateComponents = [[NSCalendar currentCalendar]components:unitFlags fromDate:lastDate];
+        _monthLabel.text = [NSString stringWithFormat:@"【%zd年%zd月%zd日】", dateComponents.year, dateComponents.month, dateComponents.day];
         return ((int)dateComponents.day); // 月により変更される。
     } else {
         return (-1);
